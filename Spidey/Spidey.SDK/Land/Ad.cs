@@ -6,14 +6,16 @@ namespace Spidey.SDK
     {
         public string Location { get; set; }
 
-        public double Area { get; set; }
+        public double? Area { get; set; }
 
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
 
-        public DateTime DatePublished { get; set; }
+        public string DatePublished { get; set; }
 
         public string ContactName { get; set; }
 
         public string ContactPhone { get; set; }
+
+        public string Description { get; set; }
     }
 }
