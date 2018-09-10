@@ -1,4 +1,5 @@
-﻿using Spidey.SDK.Web;
+﻿using Spidey.SDK.Land.Parsers;
+using Spidey.SDK.Web;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,8 +12,9 @@ namespace Spidey.SDK.Land.Crawlers
 
         private IEnumerable<SearchSetting> searchSettings;
 
-        public ZemiBgCrawler(IPageReader reader, IEnumerable<SearchSetting> searchSettings)
-            : base(reader)
+        public ZemiBgCrawler(
+            IPageReader reader, IParser parser, IEnumerable<SearchSetting> searchSettings)
+            : base(reader, parser)
         {
             this.searchSettings = searchSettings ?? 
                 throw new ArgumentException(nameof(searchSettings));
@@ -20,14 +22,18 @@ namespace Spidey.SDK.Land.Crawlers
 
         public override async Task<IEnumerable<Ad>> GetAdsAsync()
         {
+            var ads = new List<Ad>();
+
             foreach (var setting in this.searchSettings)
             {
                 var formattedEndpoint = string.Format(
                     Endpoint, (int)setting.Area, (int)setting.Region, (int)setting.Land);
                 var html = await this.reader.DownloadStringAsync(formattedEndpoint);
+
+                ads.AddRange(this.parser.ParseContent(html));
             }
 
-            return null;
+            return ads;
         }
     }
 }
